@@ -1,8 +1,8 @@
 set input1 "#SD#04012011;135515;5544.6025;N;03739.6834;E;35;215;110;7\r\n"
-set input2 "#M#груз доставлен\r\n"
+set input2 "#M#РіСЂСѓР· РґРѕСЃС‚Р°РІР»РµРЅ\r\n"
 
 proc parse {packet} {
-    # Функция распознования сожержимого пакета
+    # Р¤СѓРЅРєС†РёСЏ СЂР°СЃРїРѕР·РЅРѕРІР°РЅРёСЏ СЃРѕР¶РµСЂР¶РёРјРѕРіРѕ РїР°РєРµС‚Р°
 
     set packet [string trim $packet]
     set parts [split $packet "#"]
@@ -14,13 +14,13 @@ proc parse {packet} {
             #SD#date;time;lat1;lat2;lon1;lon2;speed;course;height;sats\r\n
             set fields [split $data ";"]
 
-            # Проверка пакета
+            # РџСЂРѕРІРµСЂРєР° РїР°РєРµС‚Р°
             set i 0;
             foreach el $fields {
-                # Проверка наличия информации
+                # РџСЂРѕРІРµСЂРєР° РЅР°Р»РёС‡РёСЏ РёРЅС„РѕСЂРјР°С†РёРё
                 if {[string length $el] > 0} {
-                    # puts "элемент номер $i - $el"
-                    # Проверка корректности информации
+                    # puts "СЌР»РµРјРµРЅС‚ РЅРѕРјРµСЂ $i - $el"
+                    # РџСЂРѕРІРµСЂРєР° РєРѕСЂСЂРµРєС‚РЅРѕСЃС‚Рё РёРЅС„РѕСЂРјР°С†РёРё
                     if {($i != 3) && ($i != 5) && [string is double $el]} {
                         incr i
                     } elseif {($i == 3) && ($el == "N") || ($el == "S")} {
@@ -28,11 +28,11 @@ proc parse {packet} {
                     } elseif {($i == 5) && ($el == "E") || ($el == "W")} {
                         incr i
                     } else {
-                        puts "Пакет $type имеет неверный формат"
+                        puts "РџР°РєРµС‚ $type РёРјРµРµС‚ РЅРµРІРµСЂРЅС‹Р№ С„РѕСЂРјР°С‚"
                         return 0
                     }
                 } else {
-                    puts "Пакет $type имеет неверный формат"
+                    puts "РџР°РєРµС‚ $type РёРјРµРµС‚ РЅРµРІРµСЂРЅС‹Р№ С„РѕСЂРјР°С‚"
                     return 0
                 }
             }
@@ -48,44 +48,44 @@ proc parse {packet} {
                 set height [lindex $fields 8]
                 set sats [lindex $fields 9]
             } else {
-                puts "Пакет $type имеет неверный формат"
+                puts "РџР°РєРµС‚ $type РёРјРµРµС‚ РЅРµРІРµСЂРЅС‹Р№ С„РѕСЂРјР°С‚"
                 return 0
             }
 
-            # Преобразование широты в одно дробное число
+            # РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ С€РёСЂРѕС‚С‹ РІ РѕРґРЅРѕ РґСЂРѕР±РЅРѕРµ С‡РёСЃР»Рѕ
             set latitudeList [split $lat1 "."]
             set degrees [string range [lindex $latitudeList 0] 0 1]
             set minutes [expr [string range [lindex $latitudeList 0] 2 3] + [lindex $latitudeList 1]*0.0001]
             set latitude [expr {($degrees + ($minutes / 60)) * ($lat2 == "N" ? 1 : -1) }]
 
-            # Преобразование долготы в одно дробное число
+            # РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РґРѕР»РіРѕС‚С‹ РІ РѕРґРЅРѕ РґСЂРѕР±РЅРѕРµ С‡РёСЃР»Рѕ
             set longitudeList [split $lon1 "."]
             set degrees [string trimleft [string range [lindex $longitudeList 0] 0 2] 0]
             set minutes [expr [string range [lindex $longitudeList 0] 3 4] + [lindex $longitudeList 1]*0.0001]
             set longitude [expr {($degrees + ($minutes / 60)) * ($lon2 == "E" ? 1 : -1) }]
 
-            # Вывод
-            puts "Тип пакета: $type"
-            puts "Дата: $date"
-            puts "Время: $time"
-            puts "Широта: $latitude °"
-            puts "Долгота: $longitude °"
-            puts "Скорость: $speed км/ч"
-            puts "Курс: $course °"
-            puts "Высота: $height м"
-            puts "Количество спутников: $sats"
+            # Р’С‹РІРѕРґ
+            puts "РўРёРї РїР°РєРµС‚Р°: $type"
+            puts "Р”Р°С‚Р°: $date"
+            puts "Р’СЂРµРјСЏ: $time"
+            puts "РЁРёСЂРѕС‚Р°: $latitude В°"
+            puts "Р”РѕР»РіРѕС‚Р°: $longitude В°"
+            puts "РЎРєРѕСЂРѕСЃС‚СЊ: $speed РєРј/С‡"
+            puts "РљСѓСЂСЃ: $course В°"
+            puts "Р’С‹СЃРѕС‚Р°: $height Рј"
+            puts "РљРѕР»РёС‡РµСЃС‚РІРѕ СЃРїСѓС‚РЅРёРєРѕРІ: $sats"
             puts ""
             return 1
         }
         "M" {
             set message $data
-            # Вывод
-            puts "Тип пакета: $type"
-            puts "Сообщение: $message"
+            # Р’С‹РІРѕРґ
+            puts "РўРёРї РїР°РєРµС‚Р°: $type"
+            puts "РЎРѕРѕР±С‰РµРЅРёРµ: $message"
             return 1
         }
         default {
-            puts "Пакет имеет неизвестный формат"
+            puts "РџР°РєРµС‚ РёРјРµРµС‚ РЅРµРёР·РІРµСЃС‚РЅС‹Р№ С„РѕСЂРјР°С‚"
             return 0
         }
     }
